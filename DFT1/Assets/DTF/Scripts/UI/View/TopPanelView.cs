@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DTF.ui
 {
@@ -8,30 +9,112 @@ namespace DTF.ui
     {
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Transform _cardRoot;
-        [SerializeField] private CardView[] _cards;
+
+        [SerializeField] private RectTransform _startNewCard;
+        [SerializeField] private RectTransform _targetNewCard;
+        [SerializeField] private RectTransform _targetOldCard;
+        [SerializeField] private RectTransform _pakOldCard;
 
         private List<Card> _listCard = new List<Card>();
+        private RectTransform _flyNewCard;
+        private float _flyNewProgress;
+        private float _flyNewDist;
 
+        private RectTransform _flyOldCard;
+        private float _flyOldProgress;
+        private float _flyOldDist;
+
+        public Action onShowPack;
+        public Action onEndAnimationNewCard;
         public Action onGoMenu;
         public Action<Card> onSelectCard;
 
+        public void OnShowPack()
+        {
+            onShowPack?.Invoke();
+        }
+
         public void AddCard(Card newCard)
         {
-            newCard.view = GameObject.Instantiate<CardView>(_cards[(int)newCard.type], _cardRoot);
+            newCard.view = GameObject.Instantiate<CardView>(Resources.Load<CardView>("ui/card/Card" + (int)newCard.type), _startNewCard);
             newCard.view.SetValue(newCard);
             newCard.view.onClick = SelectCard;
             _listCard.Add(newCard);
         }
 
+        private void Update()
+        {
+            if (_flyNewCard == null)
+            {
+                if (_startNewCard.childCount > 0)
+                {
+                    _targetNewCard.SetAsLastSibling();
+                    var f = _startNewCard.GetChild(0);
+                    f.SetParent(_targetNewCard);
+                    _flyNewCard = f.GetComponent<RectTransform>();
+                    _flyNewProgress = 1;
+                    _flyNewDist = _flyNewCard.localPosition.magnitude;
+                }
+            }
+
+            if (_flyNewCard != null)
+            {
+                _flyNewProgress -= Time.deltaTime * 2;
+                _flyNewCard.localPosition = _flyNewProgress * _flyNewDist * _flyNewCard.localPosition.normalized;
+                if (_flyNewProgress < 0.1f)
+                {
+                    _flyNewCard.transform.SetParent(_cardRoot);
+                    _flyNewCard = null;
+                    _targetNewCard.SetAsLastSibling();
+                    if (_startNewCard.childCount == 0)
+                        onEndAnimationNewCard?.Invoke();
+                }
+            }
+            //*************
+            if (_flyOldCard == null)
+            {
+                if (_targetOldCard.childCount > 0)
+                {
+                    var f = _targetOldCard.GetChild(0);
+                    //f.SetParent(_targetNewCard);
+                    _flyOldCard = f.GetComponent<RectTransform>();
+                    _flyOldProgress = 1;
+                    _flyOldDist = _flyOldCard.localPosition.magnitude;
+                }
+            }
+
+            if (_flyOldCard != null)
+            {
+                _flyOldProgress -= Time.deltaTime * 2;
+                _flyOldCard.localPosition = _flyOldProgress * _flyOldDist * _flyOldCard.localPosition.normalized;
+                if (_flyOldProgress < 0.1f)
+                {
+                    _flyOldCard.transform.SetParent(_pakOldCard);
+                    _flyOldCard = null;
+                }
+            }
+        }
+
         public void ClealCard()
         {
             for (int i = 0; i < _listCard.Count; i++)
-                GameObject.Destroy(_listCard[i].view.gameObject);
+            {
+                _listCard[i].view.gameObject.GetComponent<Button>().interactable = false;
+                _listCard[i].view.transform.SetParent(_targetOldCard);
+            }
+
+            for (int i = 0; i < _pakOldCard.childCount; i++)
+            {
+                GameObject.Destroy(_pakOldCard.GetChild(i).gameObject);
+            }
             _listCard.Clear();
         }
 
         private void SelectCard(Card card)
         {
+            if (_startNewCard.childCount > 0 || _targetOldCard.childCount > 0)
+                return;
+
             onSelectCard?.Invoke(card);
             GameObject.Destroy(card.view.gameObject);
             _listCard.Remove(card);

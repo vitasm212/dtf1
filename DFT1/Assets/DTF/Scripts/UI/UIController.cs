@@ -10,6 +10,33 @@ namespace DTF.ui
         private MenuView _menulView;
         private TopPanelView _topPanelView;
         private NextTurnPanelView _nextTurnPanelView;
+        private LosePanelView _losePanelView;
+        private WinPanelView _winPanelView;
+        private PackPanelView _packPanelView;
+
+        public PackPanelView PackPanelView()
+        {
+            if (_packPanelView == null)
+                _packPanelView = InstantiateView<PackPanelView>("PackPanelView");
+
+            return _packPanelView;
+        }
+
+        public WinPanelView WinPanelView()
+        {
+            if (_winPanelView == null)
+                _winPanelView = InstantiateView<WinPanelView>("WinPanelView");
+
+            return _winPanelView;
+        }
+
+        public LosePanelView LosePanelView()
+        {
+            if (_losePanelView == null)
+                _losePanelView = InstantiateView<LosePanelView>("LosePanelView");
+
+            return _losePanelView;
+        }
 
         public NextTurnPanelView NextTurnPanelView()
         {

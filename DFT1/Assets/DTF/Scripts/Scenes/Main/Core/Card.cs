@@ -4,8 +4,8 @@ namespace DTF
 {
     public enum CardType
     {
-        Attack = 0,
-        Move = 1,
+        Attack = 1,
+        Move = 2,
     }
 
     public class Card
@@ -13,11 +13,13 @@ namespace DTF
         public CardView view;
         public CardType type;
         public int value;
+        public int random;
 
         public Card(CardType cardType, int cardValue)
         {
             type = cardType;
             value = cardValue;
+            random = Random.Range(0, 100);
         }
     }
 }
