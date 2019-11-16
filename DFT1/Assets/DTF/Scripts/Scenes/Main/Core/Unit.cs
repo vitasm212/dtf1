@@ -9,8 +9,10 @@ namespace DTF
         public int damageDist;
         public SetDamage damage;
         public int hp;
+        public int maxHp;
         public int pos;
         public int newPos;
+        public int direction;
         public UnitView view;
         private UnitState _state = UnitState.Idle;
         public Action<Unit, UnitState> onChangeState;
@@ -28,13 +30,14 @@ namespace DTF
         {
             type = unitType;
 
-            
+
             if (unitType == UnitType.mob1)
                 damageDist = 1;
             else if (unitType == UnitType.mob2)
                 damageDist = 4;
 
             hp = startHp;
+            maxHp = startHp;
             pos = unitPos;
 
             view = GameObject.Instantiate(Resources.Load<UnitView>("units/" + unitType), transformRoot);
@@ -92,6 +95,7 @@ namespace DTF
                     }
                     break;
             }
+            view.UpdateHp((float)hp / maxHp);
         }
     }
 

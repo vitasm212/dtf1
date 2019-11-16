@@ -4,7 +4,14 @@ using UnityEditor;
 public class UnitView : MonoBehaviour
 {
     [SerializeField] private GameObject _weapon;
+    [SerializeField] private Transform _hp;
+
     private float _angleWeapon;
+
+    private void Start()
+    {
+        ShowWeapon(false);
+    }
 
     private void Update()
     {
@@ -12,6 +19,14 @@ public class UnitView : MonoBehaviour
         {
             _angleWeapon += Time.deltaTime;
             _weapon.transform.localRotation = Quaternion.Euler(0, 0, -_angleWeapon * 360);
+        }
+    }
+
+    public void UpdateHp(float value)
+    {
+        if(_hp != null)
+        {
+            _hp.localScale = new Vector3(value, 1, 1);
         }
     }
 

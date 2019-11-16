@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DTF.ui;
 using UnityEngine;
 
@@ -64,7 +65,7 @@ namespace DTF.Scenes
             for (int i = 0; i < count; i++)
             {
                 CardType rType = (CardType)UnityEngine.Random.Range(0, 2);
-                int valueCard = UnityEngine.Random.Range(-6, 6);
+                int valueCard = UnityEngine.Random.Range(-10, 10);
                 if (valueCard == 0)
                     valueCard++;
                 if (rType == CardType.Attack)
@@ -84,9 +85,15 @@ namespace DTF.Scenes
             for (int i = 1; i < _units.Length; i++)
             {
                 if (_units[i] != null)
+                {
+                    _units[i].direction = Mathf.Abs(_units[i].pos - _units[0].pos);
                     _agrUnit.Add(_units[i]);
+                }
             }
+            _agrUnit = _agrUnit.OrderBy(u => u.direction).ToList();
             _stateAi = 0;
+            if (_agrUnit.Count == 0)
+                EndAiTurn();
         }
 
         private void EndAiTurn()
@@ -173,6 +180,8 @@ namespace DTF.Scenes
                 unit.Update();
                 if (unit.hp <= 0)
                 {
+                    if (i == 0)
+                        _stopGame = true;
                     GameObject.Destroy(unit.view.gameObject);
                     _units[i] = null;
                 }
