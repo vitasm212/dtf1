@@ -1,54 +1,34 @@
-﻿
-
-using System;
+﻿using System;
 
 namespace DTF
 {
     public class Map
     {
-        private Cell[,] _map;
+        private Cell[] _map;
 
-        public static int SizeX { get; private set; } = -1;
-        public static int SizeY { get; private set; } = -1;
+        public static int Size { get; private set; } = -1;
 
-        public Map(int sizeX, int sizeY)
+        public Map(int size)
         {
-            SizeX = sizeX;
-            SizeY = sizeY;
-            _map = new Cell[sizeX, sizeX];
+            Size = size;
+            _map = new Cell[size];
         }
 
-        public Cell this[Pos pos]
+        public Cell this[int x]
         {
             get
             {
-                return this[pos.x, pos.y];
+                if (x < 0 || x >= Size)
+                    return null;
+
+                return _map[x];
             }
             set
             {
-                this[pos.x, pos.y] = value;
-            }
-        }
-
-        public Cell this[int x, int y]
-        {
-            get
-            {
-                if (x < 0 || x >= SizeX)
-                    return null;
-                if (y < 0 || y >= SizeY)
-                    return null;
-
-                return _map[x, y];
-            }
-            set
-            {
-                if (x < 0 || x >= SizeX)
+                if (x < 0 || x >= Size)
                     throw new Exception($"Out index X");
-                if (y < 0 || y >= SizeY)
-                    throw new Exception($"Out index Y");
 
-                _map[x, y] = value;
+                _map[x] = value;
             }
         }
     }

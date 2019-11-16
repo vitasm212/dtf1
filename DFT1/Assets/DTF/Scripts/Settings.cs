@@ -5,6 +5,6 @@
         public static int CellSizeX = 1;
         public static int CellSizeY = 1;
 
-        public static int MapSize = 10;
+        public static int MapSize = 20;
     }
 }

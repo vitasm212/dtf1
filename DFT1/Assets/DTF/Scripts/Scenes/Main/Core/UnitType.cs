@@ -3,7 +3,9 @@ namespace DTF
 {
     public enum UnitType
     {
-        None = 0,
-        Type1 = 1,
+        none = 0,
+        player = 1,
+        mob1 = 2,
+        mob2 = 3,
     }
 }

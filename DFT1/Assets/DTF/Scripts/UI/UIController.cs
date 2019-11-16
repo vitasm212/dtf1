@@ -9,6 +9,15 @@ namespace DTF.ui
 
         private MenuView _menulView;
         private TopPanelView _topPanelView;
+        private NextTurnPanelView _nextTurnPanelView;
+
+        public NextTurnPanelView NextTurnPanelView()
+        {
+            if (_nextTurnPanelView == null)
+                _nextTurnPanelView = InstantiateView<NextTurnPanelView>("NextTurnPanelView");
+
+            return _nextTurnPanelView;
+        }
 
         public TopPanelView TopPanelView()
         {
