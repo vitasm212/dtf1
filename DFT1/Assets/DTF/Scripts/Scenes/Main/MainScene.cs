@@ -24,6 +24,8 @@ namespace DTF.Scenes
         private int _stateAi = 0;
         private bool _stopGame = false;
 
+        private int _boostAttack = 0;
+
         private List<Card> _packCard = new List<Card>();
 
         void Start()
@@ -60,12 +62,14 @@ namespace DTF.Scenes
             GenerateSetCard(6);
 
             _units = new Unit[5];
-            _units[0] = new Unit(UnitType.player, 4, 0, _board.transform);
+            _units[0] = new Unit(UnitType.player, 4, 6, _board.transform);
 
-            for (int i = 1; i < _units.Length; i++)
-            {
-                _units[i] = new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, i * 2 + 1, _board.transform);
-            }
+
+            _units[1] = new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, 0, _board.transform);
+            _units[2] = new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, 12, _board.transform);
+            _units[3] = new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, 2, _board.transform);
+            _units[4] = new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, 10, _board.transform);
+
 
             _map = new Map(Settings.MapSize);
             for (int x = 0; x < Map.Size; x++)
@@ -78,13 +82,13 @@ namespace DTF.Scenes
         {
             for (int i = 0; i < 100; i++)
             {
-                CardType rType = (CardType)UnityEngine.Random.Range(1, 3);
-                int valueCard = UnityEngine.Random.Range(-10, 10);
-                if (valueCard == 0)
-                    valueCard++;
-                if (rType == CardType.Attack)
-                    valueCard = Mathf.Abs(valueCard);
-                var card = new Card(rType, valueCard);
+                CardType rType = (CardType)UnityEngine.Random.Range(1, 5);
+                CardDirection cardDirection = UnityEngine.Random.Range(0, 100) > 50 ? CardDirection.Left : CardDirection.Rigth;
+                CardAttackType attackType = UnityEngine.Random.Range(0, 100) > 50 ? CardAttackType.Point : CardAttackType.Zone;
+
+                int valueCard = UnityEngine.Random.Range(1, 4);
+
+                var card = new Card(rType, valueCard, cardDirection, attackType);
                 _packCard.Add(card);
             }
             _packCard = _packCard.OrderBy(c => c.random).ToList();
@@ -119,6 +123,7 @@ namespace DTF.Scenes
 
         private void OnNextTurn()
         {
+            _boostAttack = 0;
             _uIController.TopPanelView().ClealCard();
             _agrUnit.Clear();
             for (int i = 1; i < _units.Length; i++)
@@ -156,11 +161,20 @@ namespace DTF.Scenes
         {
             switch (card.type)
             {
+                case CardType.AttackPlus:
+                    _boostAttack++;
+                    break;
+                case CardType.HpPlus:
+                    _units[0].hp += card.value;
+                    if (_units[0].hp > _units[0].maxHp)
+                        _units[0].hp = _units[0].maxHp;
+                    break;
                 case CardType.Move:
                     SetUIInteractable(false);
-                    if (CanMove(_units[0].pos + card.value))
+                    var step = card.direction == CardDirection.Left ? -card.value : card.value;
+                    if (CanMove(_units[0].pos + step))
                     {
-                        _units[0].MoveTo(_units[0].pos + card.value);
+                        _units[0].MoveTo(_units[0].pos + step);
                     }
                     else
                     {
@@ -170,7 +184,13 @@ namespace DTF.Scenes
                     break;
                 case CardType.Attack:
                     SetUIInteractable(false);
-                    _units[0].Attack(new SetDamage() { dist = card.value, value = 1 });
+                    _units[0].Attack(new SetDamage()
+                    {
+                        dist = card.value,
+                        value = 1 + _boostAttack,
+                        direction = card.direction,
+                        attackType = card.attackType,
+                    });
                     _units[0].onChangeState = OnEndAttack;
                     break;
             }
@@ -182,15 +202,31 @@ namespace DTF.Scenes
             {
                 unit.onChangeState = null;
 
+                List<Unit> temp = new List<Unit>();
                 for (int i = 1; i < _units.Length; i++)
                 {
-                    Unit mob = _units[i];
-                    if (mob != null && mob.pos <= unit.pos + unit.damage.dist && mob.pos >= unit.pos - unit.damage.dist)
+                    if (_units[i] != null)
                     {
-                        mob.hp -= unit.damage.value;
+                        _units[i].direction = Mathf.Abs(_units[i].pos - _units[0].pos);
+                        if (unit.damage.direction == CardDirection.Left && _units[0].pos > _units[i].pos)
+                            temp.Add(_units[i]);
+                        if (unit.damage.direction == CardDirection.Rigth && _units[0].pos < _units[i].pos)
+                            temp.Add(_units[i]);
                     }
                 }
+                temp = temp.OrderBy(u => u.direction).ToList();
 
+                for (int i = 0; i < temp.Count; i++)
+                {
+                    Unit mob = temp[i];
+                    if (mob.direction <= unit.damage.dist)
+                    {
+                        mob.hp -= unit.damage.value;
+                        if (unit.damage.attackType == CardAttackType.Point)
+                            break;
+                    }
+                }
+                _boostAttack = 0;
                 SetUIInteractable(true);
             }
         }

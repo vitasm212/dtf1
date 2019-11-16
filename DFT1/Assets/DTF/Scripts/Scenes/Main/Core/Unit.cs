@@ -58,6 +58,8 @@ namespace DTF
 
             if (moveTo < 0)
                 moveTo = 0;
+            if (moveTo >= Settings.MapSize)
+                moveTo = Settings.MapSize - 1;
 
             newPos = moveTo;
             if (newPos == pos)
@@ -110,5 +112,7 @@ namespace DTF
     {
         public int value;
         public int dist;
+        public CardDirection direction;
+        public CardAttackType attackType;
     }
 }

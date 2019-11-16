@@ -9,6 +9,8 @@ public class CameraControl : MonoBehaviour
         if (pos < 0)
             pos = 0;
 
+        pos = 6;
+
         transform.localPosition = new Vector3(pos, 0, -10);
     }
 }

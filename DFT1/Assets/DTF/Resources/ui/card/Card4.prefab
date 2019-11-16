@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5824914665976901156}
   - component: {fileID: 7793051390260165529}
   m_Layer: 0
-  m_Name: Card3
+  m_Name: Card4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 82c0766a3be630c4093d3f3e95580f3c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 31cb95779a97315428a61eaa906d464e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
