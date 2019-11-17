@@ -44,10 +44,10 @@ namespace DTF
                     _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 8, _board));
                     break;
                 default:
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, 1, round, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 12, 1, round, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 2, 1, round, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 0, 1, round, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 0, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 1, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 12, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 11, _board));
                     break;
             }
         }

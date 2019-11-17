@@ -17,7 +17,7 @@ namespace DTF.Scenes
         private CameraControl _cameraControl;
         private BoardView _board;
         private Bulets _bulets;
-       // private Map _map;
+        // private Map _map;
         [SerializeField] CellView[] _cellView;
         private Unit[] _units;
         private List<Unit> _agrUnit = new List<Unit>();
@@ -346,6 +346,8 @@ namespace DTF.Scenes
 
                 if (Mathf.Abs(playerDirection) <= _agrUnit[0].damageDist)
                 {
+                    _bulets.SetBulet(1, new Vector3(_agrUnit[0].pos, -0.5f, 0), new Vector3(_units[0].pos, -0.5f, 0));//(i - 1, new Vector3(_units[0].pos + i * dir, 10, 0), new Vector3(_units[0].pos + i * dir, -3, 0));
+
                     _agrUnit[0].Attack(new SetDamage() { dist = _agrUnit[0].damageDist, value = 1 });
                     _agrUnit[0].onChangeState = EndAttackAi;
                 }
