@@ -5,7 +5,7 @@ namespace DTF.Scenes
 {
     public class MenuScene : MonoBehaviour
     {
-
+        private int _startRound;
         private ScenesManager _scenesManager;
         private UIController _uIController;
 
@@ -26,9 +26,10 @@ namespace DTF.Scenes
             _scenesManager = GameObject.FindObjectOfType<ScenesManager>();
 
             var param = ScenesManager.GetSceneParams(SceneId.Menu) as MenuSceneParams;
-
+            _startRound = param.Round;
             _uIController = new UIController(Canvas);
             _uIController.MenuView().Show();
+            _uIController.MenuView().Setup(param.Round);
             _uIController.MenuView().onStart = OnStart;
             _uIController.MenuView().onExit  = OnExit;
         }
@@ -36,7 +37,7 @@ namespace DTF.Scenes
         private void OnStart()
         {
             _uIController.MenuView().Close();
-            _scenesManager.LoadScene(SceneId.Main, new MainSceneParams(2, 2, 0, false));
+            _scenesManager.LoadScene(SceneId.Main, new MainSceneParams(2, 2, _startRound, false));
         }
 
         private void OnExit()

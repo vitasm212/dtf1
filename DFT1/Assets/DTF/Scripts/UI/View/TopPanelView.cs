@@ -8,6 +8,7 @@ namespace DTF.ui
     public class TopPanelView : MonoBehaviour, IView
     {
         [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private Text _curentPower;
         [SerializeField] private Transform _cardRoot;
 
         [SerializeField] private RectTransform _startNewCard;
@@ -123,6 +124,17 @@ namespace DTF.ui
         public void SetInteractable(bool value)
         {
             _canvasGroup.interactable = value;
+        }
+
+        public void SetCurentPower(int power)
+        {
+            if(_curentPower!= null)
+            {
+                if (power > 0)
+                    _curentPower.text = $"power +{power}";
+                else
+                    _curentPower.text = "";
+            }
         }
 
         public void OnGoMenu()

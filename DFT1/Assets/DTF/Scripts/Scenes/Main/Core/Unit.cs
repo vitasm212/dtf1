@@ -8,6 +8,7 @@ namespace DTF
         public UnitType type;
         public int damageDist;
         public SetDamage damage;
+        public int powerPlus;
         public int hp;
         public int maxHp;
         public int pos;
@@ -26,7 +27,7 @@ namespace DTF
         }
         public float stateProgres;
 
-        public Unit(UnitType unitType, int startHp, int unitPos, Transform transformRoot)
+        public Unit(UnitType unitType, int startHp, int power, int unitPos, Transform transformRoot)
         {
             type = unitType;
 
@@ -34,14 +35,16 @@ namespace DTF
             if (unitType == UnitType.mob1)
                 damageDist = 1;
             else if (unitType == UnitType.mob2)
-                damageDist = 4;
+                damageDist = 2;
 
             hp = startHp;
             maxHp = startHp;
             pos = unitPos;
+            powerPlus = power - 1;
 
             view = GameObject.Instantiate(Resources.Load<UnitView>("units/" + unitType), transformRoot);
             view.transform.localPosition = new Vector3(pos, -3, 0);
+            view.SetPowerStar(powerPlus);
         }
 
         public void Attack(SetDamage newDamag)

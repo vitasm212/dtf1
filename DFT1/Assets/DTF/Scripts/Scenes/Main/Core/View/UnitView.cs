@@ -1,39 +1,63 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public class UnitView : MonoBehaviour
+namespace DTF
 {
-    [SerializeField] private GameObject _weapon;
-    [SerializeField] private Transform _hp;
-
-    private float _angleWeapon;
-
-    private void Start()
+    public class UnitView : MonoBehaviour
     {
-        ShowWeapon(false);
-    }
+        [SerializeField] private GameObject _weapon;
+        [SerializeField] private GameObject[] _powerStar;
+        [SerializeField] private Transform _hp;
 
-    private void Update()
-    {
-        if (_weapon != null && _weapon.activeSelf)
+        private float _angleWeapon;
+
+        private void Awake()
         {
-            _angleWeapon += Time.deltaTime;
-            _weapon.transform.localRotation = Quaternion.Euler(0, 0, -_angleWeapon * 360);
+            ShowWeapon(false);
+            SetPowerStar(0);
         }
-    }
 
-    public void UpdateHp(float value)
-    {
-        if(_hp != null)
+        public void SetDirection(CardDirection direction)
         {
-            _hp.localScale = new Vector3(value, 1, 1);
+            if (direction == CardDirection.Left)
+                transform.localScale = new Vector3(1, 1, 1);
+            else
+                transform.localScale = new Vector3(-1, 1, 1);
         }
-    }
 
-    public void ShowWeapon(bool value)
-    {
-        _angleWeapon = 0;
-        if (_weapon != null)
-            _weapon.SetActive(value);
+        public void SetPowerStar(int powerPlus)
+        {
+            if (_powerStar != null)
+            {
+                for (int i = 0; i < _powerStar.Length; i++)
+                {
+                    _powerStar[i].SetActive(i < powerPlus);
+                }
+            }
+        }
+
+        private void Update()
+        {
+            if (_weapon != null && _weapon.activeSelf)
+            {
+                _angleWeapon += Time.deltaTime;
+                _weapon.transform.localRotation = Quaternion.Euler(0, 0, -_angleWeapon * 360);
+            }
+        }
+
+        public void UpdateHp(float value)
+        {
+            if (_hp != null)
+            {
+                _hp.localScale = new Vector3(value, 1, 1);
+            }
+        }
+
+        public void ShowWeapon(bool value)
+        {
+            _angleWeapon = 0;
+            if (_weapon != null)
+                _weapon.SetActive(value);
+        }
     }
 }

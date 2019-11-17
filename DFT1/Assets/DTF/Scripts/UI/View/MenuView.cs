@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DTF.ui
 {
@@ -8,9 +9,16 @@ namespace DTF.ui
         public Action onStart;
         public Action onExit;
 
+        [SerializeField] Text _text;
+
         public void OnStart()
         {
             onStart?.Invoke();
+        }
+
+        public void Setup(int round)
+        {
+            _text.text = $"ROUND {round}";
         }
 
         public void OnExit()
