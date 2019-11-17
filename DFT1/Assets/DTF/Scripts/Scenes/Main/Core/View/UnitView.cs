@@ -5,6 +5,7 @@ namespace DTF
 {
     public class UnitView : MonoBehaviour
     {
+        [SerializeField] private Transform _body;
         [SerializeField] private GameObject _weapon;
         [SerializeField] private GameObject[] _powerStar;
         [SerializeField] private Transform _hp;
@@ -19,10 +20,13 @@ namespace DTF
 
         public void SetDirection(CardDirection direction)
         {
-            if (direction == CardDirection.Left)
-                transform.localScale = new Vector3(1, 1, 1);
-            else
-                transform.localScale = new Vector3(-1, 1, 1);
+            if (_body != null)
+            {
+                if (direction == CardDirection.Left)
+                    _body.localScale = new Vector3(1, 1, 1);
+                else
+                    _body.localScale = new Vector3(-1, 1, 1);
+            }
         }
 
         public void SetPowerStar(int powerPlus)
