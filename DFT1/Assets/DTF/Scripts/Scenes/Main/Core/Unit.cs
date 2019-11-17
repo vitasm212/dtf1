@@ -35,7 +35,9 @@ namespace DTF
             if (unitType == UnitType.mob1)
                 damageDist = 1;
             else if (unitType == UnitType.mob2)
-                damageDist = 2;
+            {
+                damageDist = 3;
+            }
 
             hp = startHp;
             maxHp = startHp;

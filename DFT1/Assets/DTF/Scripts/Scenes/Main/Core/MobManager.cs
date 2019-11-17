@@ -21,8 +21,8 @@ namespace DTF
             switch (round)
             {
                 case 1:
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 3, 1, 12, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 0, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 12, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 0, _board));
                     break;
                 case 2:
                     _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 4, 1, 10, _board));
@@ -31,23 +31,23 @@ namespace DTF
                     break;
                 case 3:
                     _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 10, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 12, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 2, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 0, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 12, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 2, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 0, _board));
                     break;
                 case 4:
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 10, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 12, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 2, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 0, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 4, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 8, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 10, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 12, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 2, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 0, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 4, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 8, _board));
                     break;
                 default:
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 0, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 1, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 12, _board));
-                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 6, 1, 11, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 0, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 1, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 12, _board));
+                    _units.Add(new Unit((UnitType)UnityEngine.Random.Range(2, 4), 5, 1, 11, _board));
                     break;
             }
         }

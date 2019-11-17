@@ -11,12 +11,14 @@ public class CellView : MonoBehaviour
     public void UpdateInfo(Unit unit)
     {
         Clear();
+        if (unit.hp == 0)
+            return;
       //  text.text = "";
         var hp = unit.hp;
         if (hp >= _hp.Length)
-            hp = _hp.Length - 1;
+            hp = _hp.Length;
 
-        _hp[hp].SetActive(true);
+        _hp[hp-1].SetActive(true);
 
     }
 
