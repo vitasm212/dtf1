@@ -25,9 +25,11 @@ namespace DTF.Scenes
         private bool _stopGame = false;
         private int nextLevel = 1;
 
-        private int _boostAttack = 0;
+        private int _boostAttack = 0;       
 
-        private List<Card> _packCard = new List<Card>();
+        private Packs1 _packs;
+        private List<int> _additionalCard;
+        private MobManager _mobManager;
 
         void Start()
         {
@@ -35,10 +37,13 @@ namespace DTF.Scenes
 
             var param = ScenesManager.GetSceneParams(SceneId.Main) as MainSceneParams;
             nextLevel = param.Round + 1;
+            _additionalCard = param.addCard;
             _board = GameObject.FindObjectOfType<BoardView>();
             _bulets = GameObject.FindObjectOfType<Bulets>();
             _cameraControl = GameObject.FindObjectOfType<CameraControl>();
-            GeneratePack();
+
+            _packs = new Packs1();
+            _packs.GeneratePack(20, _additionalCard);
 
             _uIController = new UIController(Canvas);
             _uIController.NextTurnPanelView().Show();
@@ -51,7 +56,7 @@ namespace DTF.Scenes
                 _uIController.TopPanelView().Hide();
                 _uIController.NextTurnPanelView().Hide();
                 _uIController.PackPanelView().Show();
-                _uIController.PackPanelView().Setup(_packCard.ToArray());
+                _uIController.PackPanelView().Setup(_packs.ShowAll());
                 _uIController.PackPanelView().onClose = () =>
                  {
                      _uIController.PackPanelView().Close();
@@ -62,13 +67,9 @@ namespace DTF.Scenes
 
             GenerateSetCard(6);
 
-            _units = new Unit[5];
-            _units[0] = new Unit(UnitType.player, 4, 0, 6, _board.transform);
+            _mobManager = new MobManager(param.Round, _board.transform);
 
-            _units[1] = new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, param.Round, 0, _board.transform);
-            _units[2] = new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, param.Round, 12, _board.transform);
-            _units[3] = new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, param.Round, 2, _board.transform);
-            _units[4] = new Unit((UnitType)UnityEngine.Random.Range(2, 4), 10, param.Round, 10, _board.transform);
+            _units = _mobManager.GetUnits();           
 
 
             _map = new Map(Settings.MapSize);
@@ -78,43 +79,21 @@ namespace DTF.Scenes
             }
         }
 
-        private void GeneratePack()
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                CardType rType = (CardType)UnityEngine.Random.Range(1, 5);
-                CardDirection cardDirection = UnityEngine.Random.Range(0, 100) > 50 ? CardDirection.Left : CardDirection.Rigth;
-                CardAttackType attackType = UnityEngine.Random.Range(0, 100) > 50 ? CardAttackType.Point : CardAttackType.Zone;
-
-                int valueCard = UnityEngine.Random.Range(1, 4);
-
-                var card = new Card(rType, valueCard, cardDirection, attackType);
-                _packCard.Add(card);
-            }
-            _packCard = _packCard.OrderBy(c => c.random).ToList();
-            for (int i = 0; i < 100; i++)
-            {
-                var card = _packCard[i];
-                card.random = UnityEngine.Random.Range(0, 100);
-                _packCard[i] = card;
-            }
-        }
-
         private void GenerateSetCard(int count)
         {
             int countAdd = 0;
             for (int i = 0; i < count; i++)
             {
-                if (_packCard.Count > 0)
+                if (_packs.Count > 0)
                 {
-                    _uIController.TopPanelView().AddCard(_packCard[0]);
-                    _packCard.RemoveAt(0);
+                    _uIController.TopPanelView().AddCard(_packs.Get(0));
                     countAdd++;
                 }
             }
+
             if (countAdd == 0)
             {
-                GeneratePack();
+                _packs.Reset();
                 GenerateSetCard(count);
             }
             else
@@ -285,14 +264,24 @@ namespace DTF.Scenes
             _uIController.NextTurnPanelView().SetInteractable(value);
         }
 
-        private void GoMenu()
+        private void GoMenu(int index)
         {
             _uIController.TopPanelView().Close();
             _uIController.LosePanelView().Close();
             _uIController.WinPanelView().Close();
             _uIController.PackPanelView().Close();
             _uIController.NextTurnPanelView().Close();
-            _scenesManager.LoadScene(SceneId.Menu, new MenuSceneParams(SceneId.Main, nextLevel));
+            if (index >= 0)
+            {
+                int newIndexCard = _packs.GetUpdateIndex(index);
+                if (_additionalCard == null)
+                    _additionalCard = new List<int>();
+                _additionalCard.Add(newIndexCard);
+            }
+            else
+                _additionalCard = null;
+
+            _scenesManager.LoadScene(SceneId.Menu, new MenuSceneParams(SceneId.Main, nextLevel, _additionalCard));
         }
 
         private void Update()
@@ -330,6 +319,7 @@ namespace DTF.Scenes
                         _uIController.TopPanelView().Close();
                         _uIController.NextTurnPanelView().Close();
                         _uIController.WinPanelView().Show();
+                        _uIController.WinPanelView().Setup(_packs.GetUpdateCard());
                         _uIController.WinPanelView().onGoMenu = GoMenu;
                         return;
                     }

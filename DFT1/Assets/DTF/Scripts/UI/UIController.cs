@@ -13,6 +13,15 @@ namespace DTF.ui
         private LosePanelView _losePanelView;
         private WinPanelView _winPanelView;
         private PackPanelView _packPanelView;
+        private UpdateSetPanelView _updateSetPanelView;
+
+        public UpdateSetPanelView UpdateSetPanelView()
+        {
+            if (_updateSetPanelView == null)
+                _updateSetPanelView = InstantiateView<UpdateSetPanelView>("UpdateSetPanelView");
+
+            return _updateSetPanelView;
+        }
 
         public PackPanelView PackPanelView()
         {

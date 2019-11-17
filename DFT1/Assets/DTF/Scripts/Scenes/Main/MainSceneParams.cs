@@ -1,16 +1,18 @@
-﻿namespace DTF.Scenes
+﻿using System.Collections.Generic;
+
+namespace DTF.Scenes
 {
     public class MainSceneParams : ISceneParams
     {
         public readonly int SizeX;
-        public readonly int SizeY;
+        public readonly List<int> addCard;
         public readonly int Round;
         public readonly bool SlowTime;
 
-        public MainSceneParams(int sizeX, int sizeY, int round, bool slowTime)
+        public MainSceneParams(int sizeX, List<int> card, int round, bool slowTime)
         {
             SizeX = sizeX;
-            SizeY = sizeY;
+            addCard = card;
             Round = round;
             SlowTime = slowTime;
         }

@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace DTF.ui
 {
-    public class LosePanelView : MonoBehaviour, IView
+    public class UpdateSetPanelView : MonoBehaviour, IView
     {
-        public Action<int> onGoMenu;
+        public Action onGoMenu;
 
         public void OnGoMenu()
         {
-            onGoMenu?.Invoke(-1);
+            onGoMenu?.Invoke();
         }
 
         public void Close()

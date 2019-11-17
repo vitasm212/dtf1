@@ -25,7 +25,7 @@ namespace DTF.Scenes
             SceneManager.sceneLoaded += OnSceneLoaded;
             StartSettings();
 
-            LoadScene(SceneId.Menu, new MenuSceneParams(Current, 1));
+            LoadScene(SceneId.Menu, new MenuSceneParams(Current, 1, null));
         }
 
         private void StartSettings()

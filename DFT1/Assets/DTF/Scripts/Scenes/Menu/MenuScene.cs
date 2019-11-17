@@ -1,4 +1,5 @@
 ﻿using DTF.ui;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DTF.Scenes
@@ -8,6 +9,7 @@ namespace DTF.Scenes
         private int _startRound;
         private ScenesManager _scenesManager;
         private UIController _uIController;
+        private List<int> _additionalCard;
 
         private static Canvas _canvas;
         public static Canvas Canvas
@@ -26,6 +28,7 @@ namespace DTF.Scenes
             _scenesManager = GameObject.FindObjectOfType<ScenesManager>();
 
             var param = ScenesManager.GetSceneParams(SceneId.Menu) as MenuSceneParams;
+            _additionalCard = param.addCard;
             _startRound = param.Round;
             _uIController = new UIController(Canvas);
             _uIController.MenuView().Show();
@@ -37,7 +40,7 @@ namespace DTF.Scenes
         private void OnStart()
         {
             _uIController.MenuView().Close();
-            _scenesManager.LoadScene(SceneId.Main, new MainSceneParams(2, 2, _startRound, false));
+            _scenesManager.LoadScene(SceneId.Main, new MainSceneParams(2, _additionalCard, _startRound, false));
         }
 
         private void OnExit()
