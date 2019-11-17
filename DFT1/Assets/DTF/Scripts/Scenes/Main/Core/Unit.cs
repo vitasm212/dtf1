@@ -49,6 +49,7 @@ namespace DTF
 
         public void Attack(SetDamage newDamag)
         {
+            view.Attack(newDamag.attackType);
             damage = newDamag;
             State = UnitState.Attack;
             stateProgres = 0;

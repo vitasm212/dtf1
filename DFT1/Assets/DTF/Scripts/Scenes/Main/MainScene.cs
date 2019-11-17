@@ -17,7 +17,8 @@ namespace DTF.Scenes
         private CameraControl _cameraControl;
         private BoardView _board;
         private Bulets _bulets;
-        private Map _map;
+       // private Map _map;
+        [SerializeField] CellView[] _cellView;
         private Unit[] _units;
         private List<Unit> _agrUnit = new List<Unit>();
 
@@ -25,7 +26,7 @@ namespace DTF.Scenes
         private bool _stopGame = false;
         private int nextLevel = 1;
 
-        private int _boostAttack = 0;       
+        private int _boostAttack = 0;
 
         private Packs1 _packs;
         private List<int> _additionalCard;
@@ -69,14 +70,14 @@ namespace DTF.Scenes
 
             _mobManager = new MobManager(param.Round, _board.transform);
 
-            _units = _mobManager.GetUnits();           
+            _units = _mobManager.GetUnits();
 
 
-            _map = new Map(Settings.MapSize);
-            for (int x = 0; x < Map.Size; x++)
-            {
-                _map[x] = new Cell(1, x, _board.rootRoad.transform);
-            }
+            //_map = new Map(Settings.MapSize);
+            //for (int x = 0; x < Settings.MapSize; x++)
+            //{
+            //    _map[x] = new Cell(x);
+            //}
         }
 
         private void GenerateSetCard(int count)
@@ -193,14 +194,19 @@ namespace DTF.Scenes
                     else
                     {
                         var temp = GetUnits(_units[0]);
+
+                        Vector3 startPos = new Vector3(_units[0].pos, -2, 0);
+                        if (_units[0].view.StartAttackTransform != null)
+                            startPos = _units[0].view.StartAttackTransform.position;
+
                         if (temp.Count > 0 && temp[0].direction <= card.value)
                         {
-                            _bulets.SetBulet(0, new Vector3(_units[0].pos, -2, 0), new Vector3(temp[0].pos, -2, 0));
+                            _bulets.SetBulet(0, startPos, new Vector3(temp[0].pos, -2, 0));
                         }
                         else
                         {
                             int dir = card.direction == CardDirection.Rigth ? 1 : -1;
-                            _bulets.SetBulet(0, new Vector3(_units[0].pos, -2, 0), new Vector3(_units[0].pos + card.value * dir, -2, 0));
+                            _bulets.SetBulet(0, startPos, new Vector3(_units[0].pos + card.value * dir, -2, 0));
                         }
                     }
                     break;
@@ -289,6 +295,12 @@ namespace DTF.Scenes
             if (_stopGame)
                 return;
 
+            for (int i = 0; i < _cellView.Length; i++)
+            {
+                if (_cellView[i] != null)
+                    _cellView[i].Clear();
+            }
+
             for (int i = 0; i < _units.Length; i++)
             {
                 Unit unit = _units[i];
@@ -303,6 +315,7 @@ namespace DTF.Scenes
                     }
                 }
 
+                _cellView[unit.pos].UpdateInfo(unit);
                 unit.Update();
                 if (unit.hp <= 0)
                 {

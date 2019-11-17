@@ -6,12 +6,13 @@ namespace DTF
     {
         public int type;
         public int pos;
-        private CellView view;
+        public CellView view;
 
-        public Cell(int type, int pos, Transform transformRoot)
+        public Cell( int pos)
         {
-            view = GameObject.Instantiate(Resources.Load<CellView>("other/cell" + type.ToString()), transformRoot);
-            view.transform.localPosition = new Vector3(pos, -3, 0);
+            view = GameObject.Find("cell" + pos.ToString()).GetComponent<CellView>();
+            //view = GameObject.Instantiate(Resources.Load<CellView>("other/cell" + type.ToString()), transformRoot);
+            //view.transform.localPosition = new Vector3(pos, -3.449f, 0);
         }
     }
 }

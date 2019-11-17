@@ -5,10 +5,12 @@ namespace DTF
 {
     public class UnitView : MonoBehaviour
     {
+        [SerializeField] public Transform StartAttackTransform;
         [SerializeField] private Transform _body;
         [SerializeField] private GameObject _weapon;
         [SerializeField] private GameObject[] _powerStar;
         [SerializeField] private Transform _hp;
+        [SerializeField] private Animator _animator;
 
         private float _angleWeapon;
 
@@ -16,6 +18,17 @@ namespace DTF
         {
             ShowWeapon(false);
             SetPowerStar(0);
+        }
+
+        public void Attack(CardAttackType type)
+        {
+            if (_animator != null)
+            {
+                if (type == CardAttackType.Point)
+                    _animator.CrossFade("FirstAttack", 0, 0, 0);
+                else
+                    _animator.CrossFade("SecondAttack", 0, 0, 0);
+            }
         }
 
         public void SetDirection(CardDirection direction)
