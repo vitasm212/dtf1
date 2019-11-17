@@ -16,7 +16,7 @@ namespace DTF.Scenes
 
         private CameraControl _cameraControl;
         private BoardView _board;
-
+        private Bulets _bulets;
         private Map _map;
         private Unit[] _units;
         private List<Unit> _agrUnit = new List<Unit>();
@@ -36,6 +36,7 @@ namespace DTF.Scenes
             var param = ScenesManager.GetSceneParams(SceneId.Main) as MainSceneParams;
             nextLevel = param.Round + 1;
             _board = GameObject.FindObjectOfType<BoardView>();
+            _bulets = GameObject.FindObjectOfType<Bulets>();
             _cameraControl = GameObject.FindObjectOfType<CameraControl>();
             GeneratePack();
 
@@ -202,6 +203,27 @@ namespace DTF.Scenes
                         attackType = card.attackType,
                     });
                     _units[0].onChangeState = OnEndAttack;
+                    if (card.attackType == CardAttackType.Zone)
+                    {
+                        int dir = card.direction == CardDirection.Rigth ? 1 : -1;
+                        for (int i = 1; i <= card.value; i++)
+                        {
+                            _bulets.SetBulet(i - 1, new Vector3(_units[0].pos + i * dir, 10, 0), new Vector3(_units[0].pos + i * dir, -3, 0));
+                        }
+                    }
+                    else
+                    {
+                        var temp = GetUnits(_units[0]);
+                        if (temp.Count > 0 && temp[0].direction <= card.value)
+                        {
+                            _bulets.SetBulet(0, new Vector3(_units[0].pos, -2, 0), new Vector3(temp[0].pos, -2, 0));
+                        }
+                        else
+                        {
+                            int dir = card.direction == CardDirection.Rigth ? 1 : -1;
+                            _bulets.SetBulet(0, new Vector3(_units[0].pos, -2, 0), new Vector3(_units[0].pos + card.value * dir, -2, 0));
+                        }
+                    }
                     break;
             }
         }
@@ -212,19 +234,7 @@ namespace DTF.Scenes
             {
                 unit.onChangeState = null;
 
-                List<Unit> temp = new List<Unit>();
-                for (int i = 1; i < _units.Length; i++)
-                {
-                    if (_units[i] != null)
-                    {
-                        _units[i].direction = Mathf.Abs(_units[i].pos - _units[0].pos);
-                        if (unit.damage.direction == CardDirection.Left && _units[0].pos > _units[i].pos)
-                            temp.Add(_units[i]);
-                        if (unit.damage.direction == CardDirection.Rigth && _units[0].pos < _units[i].pos)
-                            temp.Add(_units[i]);
-                    }
-                }
-                temp = temp.OrderBy(u => u.direction).ToList();
+                var temp = GetUnits(unit);
 
                 for (int i = 0; i < temp.Count; i++)
                 {
@@ -240,6 +250,24 @@ namespace DTF.Scenes
                 _uIController.TopPanelView().SetCurentPower(_boostAttack);
                 SetUIInteractable(true);
             }
+        }
+
+        private List<Unit> GetUnits(Unit unit)
+        {
+            List<Unit> temp = new List<Unit>();
+            for (int i = 1; i < _units.Length; i++)
+            {
+                if (_units[i] != null)
+                {
+                    _units[i].direction = Mathf.Abs(_units[i].pos - _units[0].pos);
+                    if (unit.damage.direction == CardDirection.Left && _units[0].pos > _units[i].pos)
+                        temp.Add(_units[i]);
+                    if (unit.damage.direction == CardDirection.Rigth && _units[0].pos < _units[i].pos)
+                        temp.Add(_units[i]);
+                }
+            }
+            temp = temp.OrderBy(u => u.direction).ToList();
+            return temp;
         }
 
         private void OnEndMove(Unit unit, UnitState state)
@@ -279,8 +307,11 @@ namespace DTF.Scenes
                     continue;
                 if (i > 0)
                 {
-                    CardDirection direction = unit.pos < _units[0].pos ? CardDirection.Left : CardDirection.Rigth;
-                    unit.view.SetDirection(direction);
+                    if (_units[0] != null)
+                    {
+                        CardDirection direction = unit.pos < _units[0].pos ? CardDirection.Left : CardDirection.Rigth;
+                        unit.view.SetDirection(direction);
+                    }
                 }
 
                 unit.Update();
